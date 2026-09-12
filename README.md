@@ -5,9 +5,12 @@ A low-overhead, cross-platform system-tray app for running your own commands. It
 ## Run while developing
 
 ```sh
+cd /Users/prat/CODING/menu-runner
 npm install
 npm run tauri dev
 ```
+
+Menu Runner starts in the macOS menu bar rather than opening a normal app window. Click its icon at the far right of the menu bar, then choose **Manage actions…** to open the settings page. Press `Ctrl+C` in the terminal to stop development mode.
 
 ## Install on macOS
 
@@ -21,7 +24,9 @@ The resulting `.dmg` is placed in `src-tauri/target/release/bundle/dmg/`. A user
 
 ## Configure actions
 
-Choose **Manage actions…** from the menu bar to add, edit, and delete actions. Saving changes updates the tray menu immediately.
+Choose **Manage actions…** from the menu bar to add, edit, and delete actions. The minimal settings page includes an action name, command, optional working folder, and platform selector. Saving changes updates the tray menu immediately.
+
+The working folder is where the command starts. For example, use `npm run tauri dev` with `/Users/prat/CODING/menu-runner` as its working folder so npm finds this project's `package.json`. Leave it blank for commands that do not depend on a particular directory, such as `open ~`.
 
 The actions are stored locally in this file, which Menu Runner creates on first launch:
 
@@ -37,7 +42,8 @@ You can also edit the JSON directly. Every action supported by the current platf
     {
       "id": "backup",
       "label": "Run backup",
-      "command": "/usr/bin/python3 /Users/me/scripts/backup.py"
+      "command": "/usr/bin/python3 daily.py",
+      "working_directory": "/Users/me/scripts"
     },
     {
       "id": "open-project",
