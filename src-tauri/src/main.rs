@@ -104,6 +104,7 @@ fn build_tray(app: &AppHandle) -> tauri::Result<()> {
     let icon = app.default_window_icon().expect("application icon missing").clone();
     TrayIconBuilder::with_id("main")
         .icon(icon)
+        .icon_as_template(true)
         .tooltip("Menu Runner")
         .menu(&menu)
         .show_menu_on_left_click(true)

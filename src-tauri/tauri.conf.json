@@ -17,6 +17,6 @@
     "active": true,
     "targets": "all",
     "resources": { "resources/actions.json": "actions.json" },
-    "icon": ["icons/icon.png"]
+    "icon": ["icons/menu-runner-template-v4.png"]
   }
 }
