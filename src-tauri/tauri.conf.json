@@ -17,6 +17,7 @@
     "active": true,
     "targets": "all",
     "resources": { "resources/actions.json": "actions.json" },
-    "icon": ["icons/menu-runner-template-v4.png"]
+    "icon": ["icons/menu-runner-template-v4.png"],
+    "macOS": { "signingIdentity": "-" }
   }
 }

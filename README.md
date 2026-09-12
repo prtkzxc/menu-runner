@@ -14,6 +14,14 @@ Menu Runner starts in the macOS menu bar rather than opening a normal app window
 
 ## Install on macOS
 
+### From a GitHub release
+
+Open the repository's [Releases page](https://github.com/prtkzxc/menu-runner/releases), download the DMG that matches your Mac, then open it and drag **Menu Runner** to **Applications**. No developer tools are required.
+
+The initial release uses ad-hoc signing. macOS may ask you to approve it in **System Settings → Privacy & Security** before first launch. A future signed and notarized release will remove that extra step.
+
+### Build locally
+
 Build a distributable app with:
 
 ```sh
@@ -21,6 +29,12 @@ npm run tauri build
 ```
 
 The resulting `.dmg` is placed in `src-tauri/target/release/bundle/dmg/`. A user can open it, drag **Menu Runner** to Applications, and run it—no Xcode, Node, Rust, or Python is necessary to use the app itself.
+
+## Publishing a release
+
+Pushing a tag such as `v0.1.0` starts the GitHub Actions release workflow. It builds Apple Silicon and Intel DMGs, then attaches them to a public GitHub Release. The workflow uses the version in `src-tauri/tauri.conf.json`, so update that version before tagging a new release.
+
+To produce signed and notarized releases, add these repository secrets after enrolling in the Apple Developer Program: `APPLE_CERTIFICATE`, `APPLE_CERTIFICATE_PASSWORD`, `KEYCHAIN_PASSWORD`, `APPLE_ID`, `APPLE_PASSWORD` (an app-specific password), and `APPLE_TEAM_ID`. Until then, the workflow creates ad-hoc signed builds; they work, but macOS may require the user to approve the first launch.
 
 ## Configure actions
 
