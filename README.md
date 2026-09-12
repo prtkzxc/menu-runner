@@ -21,13 +21,15 @@ The resulting `.dmg` is placed in `src-tauri/target/release/bundle/dmg/`. A user
 
 ## Configure actions
 
-On first launch, Menu Runner creates this file:
+Choose **Manage actions…** from the menu bar to add, edit, and delete actions. Saving changes updates the tray menu immediately.
+
+The actions are stored locally in this file, which Menu Runner creates on first launch:
 
 ```text
 ~/Library/Application Support/com.local.menurunner/actions.json
 ```
 
-Restart the app after editing it. Every supported action becomes a native tray-menu item.
+You can also edit the JSON directly. Every action supported by the current platform becomes a native tray-menu item.
 
 ```json
 {

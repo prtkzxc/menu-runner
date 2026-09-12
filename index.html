@@ -1,5 +1,37 @@
 <!doctype html>
 <html lang="en">
-  <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Menu Runner</title></head>
-  <body><main><h1>Menu Runner</h1><p>This app lives in your menu bar. Use its menu to run configured actions.</p><p>To customize it, edit <code>actions.json</code> in the app's settings folder, then select “Reload actions”.</p></main></body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menu Runner</title>
+    <style>
+      :root { color: #1d1d1f; background: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      * { box-sizing: border-box; } body { margin: 0; } main { padding: 28px; }
+      header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+      h1 { font-size: 20px; letter-spacing: -.3px; margin: 0; }
+      button { appearance: none; border: 0; border-radius: 7px; background: #1d1d1f; color: #fff; cursor: pointer; font: inherit; padding: 8px 12px; }
+      button:hover { background: #444; } button.secondary { background: #f2f2f4; color: #1d1d1f; } button.danger { color: #c5221f; }
+      #list { border-top: 1px solid #e5e5e7; }
+      .action { align-items: center; border-bottom: 1px solid #e5e5e7; display: flex; gap: 12px; min-height: 58px; }
+      .action-name { flex: 1; font-size: 14px; font-weight: 500; } .action-meta { color: #86868b; font-size: 12px; margin-top: 3px; }
+      .empty { color: #86868b; font-size: 14px; padding: 28px 0; text-align: center; }
+      dialog { border: 0; border-radius: 12px; box-shadow: 0 12px 42px #0003; padding: 24px; width: 420px; }
+      dialog::backdrop { background: #0002; } dialog h2 { font-size: 17px; margin: 0 0 20px; }
+      label { display: block; font-size: 12px; font-weight: 600; margin: 14px 0 5px; }
+      input, select { border: 1px solid #d2d2d7; border-radius: 7px; font: inherit; padding: 9px; width: 100%; }
+      .buttons { display: flex; gap: 8px; justify-content: flex-end; margin-top: 24px; }
+      #error { color: #c5221f; font-size: 12px; margin-top: 12px; min-height: 14px; }
+    </style>
+  </head>
+  <body>
+    <main><header><h1>Actions</h1><button id="add">+ Add action</button></header><section id="list"></section></main>
+    <dialog id="editor"><form id="form"><h2 id="editor-title">Add action</h2>
+      <label for="label">Action name</label><input id="label" required placeholder="Start server" />
+      <label for="command">Command</label><input id="command" required placeholder="npm run dev" />
+      <label for="directory">Working folder (optional)</label><input id="directory" placeholder="/Users/me/project" />
+      <label for="platform">Platform</label><select id="platform"><option value="">All platforms</option><option value="macos">macOS</option><option value="windows">Windows</option><option value="linux">Linux</option></select>
+      <p id="error"></p><div class="buttons"><button class="secondary" type="button" id="cancel">Cancel</button><button type="submit">Save action</button></div>
+    </form></dialog>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>

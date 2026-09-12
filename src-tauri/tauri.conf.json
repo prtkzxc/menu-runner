@@ -10,7 +10,7 @@
     "frontendDist": "../dist"
   },
   "app": {
-    "windows": [{ "title": "Menu Runner", "width": 480, "height": 260, "visible": false }],
+    "windows": [{ "title": "Menu Runner", "width": 510, "height": 440, "visible": false, "resizable": false }],
     "security": { "csp": null }
   },
   "bundle": {
