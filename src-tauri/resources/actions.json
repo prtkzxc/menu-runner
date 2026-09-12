@@ -1,0 +1,15 @@
+{
+  "actions": [
+    {
+      "id": "hello",
+      "label": "Say hello",
+      "command": "echo 'Hello from Menu Runner'"
+    },
+    {
+      "id": "open-home",
+      "label": "Open Home folder",
+      "command": "open ~",
+      "platforms": ["macos"]
+    }
+  ]
+}

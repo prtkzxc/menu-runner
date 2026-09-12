@@ -1,0 +1,15 @@
+{
+  "name": "menu-runner",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "tauri": "tauri"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.10.0",
+    "vite": "^7.0.0"
+  }
+}
