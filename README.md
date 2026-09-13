@@ -36,6 +36,12 @@ Pushing a tag such as `v0.1.0` starts the GitHub Actions release workflow. It bu
 
 To produce signed and notarized releases, add these repository secrets after enrolling in the Apple Developer Program: `APPLE_CERTIFICATE`, `APPLE_CERTIFICATE_PASSWORD`, `KEYCHAIN_PASSWORD`, `APPLE_ID`, `APPLE_PASSWORD` (an app-specific password), and `APPLE_TEAM_ID`. Until then, the workflow creates ad-hoc signed builds; they work, but macOS may require the user to approve the first launch.
 
+## In-app updates
+
+Choose **Check for Updates…** from the menu bar whenever you want to check GitHub Releases. The app is otherwise idle; it does not poll in the background. Available releases are cryptographically verified with Tauri's update-signing key before installation, then Menu Runner restarts.
+
+The private update key is stored only as the `TAURI_SIGNING_PRIVATE_KEY` GitHub Actions secret. Keep a secure backup of the matching local key at `~/.tauri/menu-runner.key`; losing it prevents future releases from updating existing installations.
+
 ## Configure actions
 
 Choose **Manage actions…** from the menu bar to add, edit, and delete actions. The minimal settings page includes an action name, command, optional working folder, and platform selector. Saving changes updates the tray menu immediately.

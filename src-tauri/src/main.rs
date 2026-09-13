@@ -6,6 +6,7 @@ use tauri::{
     AppHandle, Manager,
 };
 use tauri_plugin_shell::ShellExt;
+use tauri_plugin_updater::UpdaterExt;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 struct ActionsFile {
@@ -78,11 +79,13 @@ fn build_menu(app: &AppHandle) -> tauri::Result<Menu<tauri::Wry>> {
         vec![]
     }).into_iter().map(|action| MenuItem::with_id(app, format!("action:{}", action.id), action.label, true, None::<&str>)).collect::<Result<Vec<_>, _>>()?;
     let manage = MenuItem::with_id(app, "manage", "Manage actions…", true, None::<&str>)?;
+    let check_updates = MenuItem::with_id(app, "check-updates", "Check for Updates…", true, None::<&str>)?;
     let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
     let separator = PredefinedMenuItem::separator(app)?;
     let mut references: Vec<&dyn tauri::menu::IsMenuItem<tauri::Wry>> = items.iter().map(|item| item as &dyn tauri::menu::IsMenuItem<tauri::Wry>).collect();
     references.push(&separator);
     references.push(&manage);
+    references.push(&check_updates);
     references.push(&quit);
     Menu::with_items(app, &references)
 }
@@ -99,6 +102,23 @@ fn show_manager(app: &AppHandle) {
     }
 }
 
+fn check_for_updates(app: AppHandle) {
+    tauri::async_runtime::spawn(async move {
+        let updater = match app.updater() {
+            Ok(updater) => updater,
+            Err(error) => { eprintln!("Could not initialize updater: {error}"); return; }
+        };
+        match updater.check().await {
+            Ok(Some(update)) => match update.download_and_install(|_, _| {}, || {}).await {
+                Ok(()) => app.restart(),
+                Err(error) => eprintln!("Update failed: {error}"),
+            },
+            Ok(None) => eprintln!("Menu Runner is up to date."),
+            Err(error) => eprintln!("Could not check for updates: {error}"),
+        }
+    });
+}
+
 fn build_tray(app: &AppHandle) -> tauri::Result<()> {
     let menu = build_menu(app)?;
     let icon = app.default_window_icon().expect("application icon missing").clone();
@@ -112,6 +132,7 @@ fn build_tray(app: &AppHandle) -> tauri::Result<()> {
         let id = event.id().as_ref();
         if id == "quit" { app.exit(0); }
         else if id == "manage" { show_manager(app); }
+        else if id == "check-updates" { check_for_updates(app.clone()); }
         else if let Some(action_id) = id.strip_prefix("action:") { run_action(app.clone(), action_id.to_string()); }
         })
         .build(app)?;
@@ -136,6 +157,7 @@ fn save_actions(app: AppHandle, actions: Vec<Action>) -> Result<(), String> {
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| { build_tray(app.handle())?; Ok(()) })
         .invoke_handler(tauri::generate_handler![get_actions, save_actions])
         .on_window_event(|window, event| {
