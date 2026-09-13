@@ -39,12 +39,15 @@ jobs:
       - run: npm ci
 
       - name: Import Apple signing certificate
-        if: ${{ secrets.APPLE_CERTIFICATE != '' }}
         env:
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
         run: |
+          if [ -z "$APPLE_CERTIFICATE" ]; then
+            echo "No Apple certificate configured; using ad-hoc signing."
+            exit 0
+          fi
           echo "$APPLE_CERTIFICATE" | base64 --decode > certificate.p12
           security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
           security default-keychain -s build.keychain
@@ -57,8 +60,6 @@ jobs:
       - uses: tauri-apps/tauri-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Falls back to ad-hoc signing until Apple Developer secrets are added.
-          APPLE_SIGNING_IDENTITY: ${{ env.APPLE_SIGNING_IDENTITY || '-' }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
