@@ -38,7 +38,7 @@ To produce signed and notarized releases, add these repository secrets after enr
 
 ## In-app updates
 
-Choose **Check for Updates…** from the menu bar whenever you want to check GitHub Releases. The app is otherwise idle; it does not poll in the background. Available releases are cryptographically verified with Tauri's update-signing key before installation, then Menu Runner restarts.
+Choose **Check for Updates…** from the menu bar whenever you want to check GitHub Releases. The app is otherwise idle; it does not poll in the background. It shows a native message when it is already up to date, an update is available, or an error occurs. Available releases are cryptographically verified with Tauri's update-signing key before installation, then Menu Runner restarts.
 
 The private update key is stored only as the `TAURI_SIGNING_PRIVATE_KEY` GitHub Actions secret. Keep a secure backup of the matching local key at `~/.tauri/menu-runner.key`; losing it prevents future releases from updating existing installations.
 

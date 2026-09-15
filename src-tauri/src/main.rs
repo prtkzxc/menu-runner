@@ -6,6 +6,7 @@ use tauri::{
     AppHandle, Manager,
 };
 use tauri_plugin_shell::ShellExt;
+use tauri_plugin_dialog::DialogExt;
 use tauri_plugin_updater::UpdaterExt;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -106,15 +107,21 @@ fn check_for_updates(app: AppHandle) {
     tauri::async_runtime::spawn(async move {
         let updater = match app.updater() {
             Ok(updater) => updater,
-            Err(error) => { eprintln!("Could not initialize updater: {error}"); return; }
+            Err(error) => {
+                app.dialog().message(format!("Could not initialize updates: {error}")).title("Update check failed").show(|_| {});
+                return;
+            }
         };
         match updater.check().await {
-            Ok(Some(update)) => match update.download_and_install(|_, _| {}, || {}).await {
+            Ok(Some(update)) => {
+                app.dialog().message(format!("Version {} is available and will now install.", update.version)).title("Update available").show(|_| {});
+                match update.download_and_install(|_, _| {}, || {}).await {
                 Ok(()) => app.restart(),
-                Err(error) => eprintln!("Update failed: {error}"),
-            },
-            Ok(None) => eprintln!("Menu Runner is up to date."),
-            Err(error) => eprintln!("Could not check for updates: {error}"),
+                Err(error) => app.dialog().message(format!("The update could not be installed: {error}")).title("Update failed").show(|_| {}),
+                }
+            }
+            Ok(None) => app.dialog().message("You already have the latest version.").title("Menu Runner is up to date").show(|_| {}),
+            Err(error) => app.dialog().message(format!("Could not check for updates: {error}")).title("Update check failed").show(|_| {}),
         }
     });
 }
@@ -157,6 +164,7 @@ fn save_actions(app: AppHandle, actions: Vec<Action>) -> Result<(), String> {
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| { build_tray(app.handle())?; Ok(()) })
         .invoke_handler(tauri::generate_handler![get_actions, save_actions])
