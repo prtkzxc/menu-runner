@@ -13,7 +13,7 @@ const escapeHtml = (value) => { const element = document.createElement("div"); e
 
 function render() {
   if (!actions.length) { list.innerHTML = `<p class="empty">No actions yet.</p>`; return; }
-  list.innerHTML = actions.map((action) => `<div class="action"><div class="action-name">${escapeHtml(action.label)}<div class="action-meta">${platformLabel(action)}</div></div><button class="secondary" data-edit="${action.id}">Edit</button><button class="secondary danger" data-delete="${action.id}">Delete</button></div>`).join("");
+  list.innerHTML = actions.map((action) => `<div class="action"><div class="action-name">${escapeHtml(action.label)}<div class="action-meta">${platformLabel(action)}</div></div><button class="secondary" data-edit="${action.id}">Edit</button><button class="secondary" data-duplicate="${action.id}">Duplicate</button><button class="secondary danger" data-delete="${action.id}">Delete</button></div>`).join("");
 }
 async function persist() { await invoke("save_actions", { actions }); }
 function openEditor(action) {
@@ -29,10 +29,14 @@ function openEditor(action) {
 document.querySelector("#add").addEventListener("click", () => openEditor());
 document.querySelector("#cancel").addEventListener("click", () => editor.close());
 list.addEventListener("click", async (event) => {
-  const id = event.target.dataset.edit || event.target.dataset.delete;
+  const id = event.target.dataset.edit || event.target.dataset.duplicate || event.target.dataset.delete;
   if (!id) return;
   const action = actions.find((item) => item.id === id);
   if (event.target.dataset.edit) openEditor(action);
+  if (event.target.dataset.duplicate) {
+    actions = [...actions, { ...action, id: newId(), label: `Copy of ${action.label}` }];
+    await persist(); render();
+  }
   if (event.target.dataset.delete && confirm(`Delete “${action.label}”?`)) { actions = actions.filter((item) => item.id !== id); await persist(); render(); }
 });
 form.addEventListener("submit", async (event) => {

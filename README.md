@@ -44,7 +44,7 @@ The private update key is stored only as the `TAURI_SIGNING_PRIVATE_KEY` GitHub 
 
 ## Configure actions
 
-Choose **Manage actions…** from the menu bar to add, edit, and delete actions. The minimal settings page includes an action name, command, optional working folder, and platform selector. Saving changes updates the tray menu immediately.
+Choose **Manage actions…** from the menu bar to add, edit, duplicate, and delete actions. The minimal settings page includes an action name, command, optional working folder, and platform selector. Duplicating copies every setting into a new action named `Copy of …`. Saving changes updates the tray menu immediately.
 
 The working folder is where the command starts. For example, use `npm run tauri dev` with `/Users/prat/CODING/menu-runner` as its working folder so npm finds this project's `package.json`. Leave it blank for commands that do not depend on a particular directory, such as `open ~`.
 
